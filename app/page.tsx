@@ -5,7 +5,7 @@ import Card from './components/card'
 export default function Home() {
   return (
     <>
-    <main className=' bg-linear-to-b from-stone-900 to-black text-white flex flex-col justify-center items-center space-y-6'>
+    <main className='bg-linear-to-b from-stone-900 to-black text-white flex flex-col justify-center items-center space-y-6'>
       <div className="flex flex-col justify-center items-center min-h-screen space-y-6">
         <h1 className='font-bold text-green-500 text-5xl italic'>Bem-vindo a In-Fit</h1>
         <p className='font-bold text-lg italic'>A consultoria esportiva que transforma seu corpo com a musculação</p>

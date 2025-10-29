@@ -6,15 +6,16 @@ type Props = {
     descricao: string,
     valor: string,
     imagem?: string,
-    cor: string
+    shadow: string,
+    text: string
 }
 
-export default function Cardplano({nome, descricao, valor, imagem, cor}: Props) {
+export default function Cardplano({nome, descricao, valor, imagem, shadow, text}: Props) {
   return (
-    <div className={`w-80 bg-stone-800 rounded-lg shadow-lg p-6 flex flex-col justify-between gap-6 hover:scale-105 transition-all transition-300 hover:shadow-${cor}-500 `}>
-        <h1 className=' font-bold text-center'>Plano <span className={`font-bold text-2xl text-${cor}-500`}>{nome}</span></h1>
+    <div className={`w-80 bg-stone-800 rounded-lg shadow-lg p-6 flex flex-col justify-between gap-6 hover:scale-105 transition-all transition-300 hover:${shadow}`}>
+        <h1 className=' font-bold text-center'>Plano <span className={`font-bold text-2xl ${text}`}>{nome}</span></h1>
         <Image
-            src={imagem || "/default-image.jpg"}
+            src={imagem || '/plano-basico.jpg'}
             alt={nome}
             width={150}
             height={250}

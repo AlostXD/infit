@@ -1,42 +1,37 @@
-# Stage 1: Dependencies
+# Use Node.js LTS
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# Install dependencies (use npm ci if package-lock.json exists)
+COPY package*.json ./
+RUN \
+    if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; \
+    else npm install --no-audit --no-fund; fi
 
-# Install dependencies
-RUN npm ci
-
-# Stage 2: Builder
+# Build the application
 FROM node:20-alpine AS builder
 WORKDIR /app
+ENV NODE_ENV=production
 
-# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the application
+# Build Next.js (app dir)
 RUN npm run build
 
-# Stage 3: Runner
+# Run with a minimal image
 FROM node:20-alpine AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
+ENV PORT=3000
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy necessary files from builder
+# Copy only needed files
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 
-# Set correct permissions
-RUN chown -R nextjs:nodejs /app
+# If you use next start, you need node_modules in runtime
+COPY --from=deps /app/node_modules ./node_modules
 
-USER nextjs
-
-CMD ["node", "server.js"]
+EXPOSE 3000
+CMD ["npm", "run", "start"]
